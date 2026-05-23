@@ -1,0 +1,192 @@
+{
+  "shelves": [
+    [
+      {
+        "title": "Tools of Titans",
+        "author": "Ferriss",
+        "height": "tall",
+        "width": "wide",
+        "status": "read"
+      },
+      {
+        "title": "High Performance",
+        "author": "Humphrey",
+        "height": "",
+        "width": "",
+        "status": "read"
+      },
+      {
+        "title": "Cycles",
+        "author": "Meridian",
+        "height": "short",
+        "width": "thin",
+        "status": "read"
+      },
+      {
+        "title": "The Creative Act",
+        "author": "Rubin",
+        "height": "tall",
+        "width": "",
+        "status": "read"
+      },
+      {
+        "title": "How to Keep Your Cool",
+        "author": "Seneca",
+        "height": "short",
+        "width": "thin",
+        "status": "read"
+      },
+      {
+        "title": "How to Do the Right Thing",
+        "author": "Seneca",
+        "height": "short",
+        "width": "thin",
+        "status": "read"
+      },
+      {
+        "title": "How to Flourish",
+        "author": "Aristotle",
+        "height": "short",
+        "width": "thin",
+        "status": "read"
+      },
+      {
+        "title": "Elon Musk",
+        "author": "Isaacson",
+        "height": "tall",
+        "width": "wide",
+        "status": "read"
+      },
+      {
+        "title": "Nineteen Eighty-Four",
+        "author": "Orwell",
+        "height": "short",
+        "width": "",
+        "status": "read"
+      }
+    ],
+    [
+      {
+        "title": "Waking Up",
+        "author": "Harris",
+        "height": "",
+        "width": "",
+        "status": "read"
+      },
+      {
+        "title": "The Forever Dog",
+        "author": "Habib",
+        "height": "tall",
+        "width": "wide",
+        "status": "read"
+      },
+      {
+        "title": "Speed Reading in a Week",
+        "author": "Konstant",
+        "height": "",
+        "width": "thin",
+        "status": "read"
+      },
+      {
+        "title": "The End of Eternity",
+        "author": "Asimov",
+        "height": "short",
+        "width": "",
+        "status": "read"
+      },
+      {
+        "title": "Lectures",
+        "author": "Harvard Classics",
+        "height": "tall",
+        "width": "",
+        "status": "read"
+      },
+      {
+        "title": "Swoosh",
+        "author": "Strasser",
+        "height": "tall",
+        "width": "wide",
+        "status": "read"
+      },
+      {
+        "title": "Steve Jobs",
+        "author": "Isaacson",
+        "height": "tall",
+        "width": "wide",
+        "status": "read"
+      },
+      {
+        "title": "Outliers",
+        "author": "Gladwell",
+        "height": "",
+        "width": "",
+        "status": "read"
+      },
+      {
+        "title": "Be Yourself",
+        "author": "Vasudev",
+        "height": "",
+        "width": "thin",
+        "status": "read"
+      }
+    ],
+    [
+      {
+        "title": "The Four Agreements",
+        "author": "Ruiz",
+        "height": "short",
+        "width": "thin",
+        "status": "read"
+      },
+      {
+        "title": "The Origin of Species",
+        "author": "Darwin",
+        "height": "",
+        "width": "",
+        "status": "read"
+      },
+      {
+        "title": "StrengthsFinder 2.0",
+        "author": "Rath",
+        "height": "short",
+        "width": "",
+        "status": "read"
+      },
+      {
+        "title": "Freakonomics",
+        "author": "Levitt",
+        "height": "",
+        "width": "wide",
+        "status": "read"
+      },
+      {
+        "title": "Basic Economics",
+        "author": "Sowell",
+        "height": "tall",
+        "width": "wide",
+        "status": "read"
+      },
+      {
+        "title": "The 4 Disciplines of Execution",
+        "author": "McChesney",
+        "height": "tall",
+        "width": "",
+        "status": "read"
+      },
+      {
+        "title": "Right and Reason",
+        "author": "Fagothey",
+        "height": "tall",
+        "width": "wide",
+        "status": "read"
+      },
+      {
+        "title": "The Black Swan",
+        "author": "Taleb",
+        "height": "tall",
+        "width": "",
+        "status": "read"
+      }
+    ]
+  ]
+}

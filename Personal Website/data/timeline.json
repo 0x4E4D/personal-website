@@ -1,0 +1,10 @@
+{
+  "events": [
+    {
+      "date": "2026-01-06",
+      "type": "note",
+      "title": "Started this website",
+      "text": "First commit. Beep boop."
+    }
+  ]
+}

@@ -3,7 +3,7 @@
 //  Personal Website
 //
 //  Created by Nicolas Moreno on 2026-01-06.
-const PAGES = ["about", "photos", "music", "blog", "map", "library", "timeline", "acknowledgements"];
+const PAGES = ["about", "photos", "music", "blog", "library", "acknowledgements"];
 
 function getPageFromHash() {
   const raw = (location.hash || "").replace("#", "").trim().toLowerCase();
@@ -23,7 +23,7 @@ function setActiveButton(page) {
 }
 
 // -------------------------
-// BLOG: file-based index + per-post html
+// FETCH HELPERS
 // -------------------------
 async function fetchJson(path) {
   const res = await fetch(path, { cache: "no-store" });
@@ -37,6 +37,9 @@ async function fetchText(path) {
   return res.text();
 }
 
+// -------------------------
+// BLOG
+// -------------------------
 function sortPosts(posts, mode) {
   const copy = [...posts];
 
@@ -45,7 +48,6 @@ function sortPosts(posts, mode) {
     return copy;
   }
 
-  // date should be YYYY-MM-DD
   copy.sort((a, b) => (a.date || "").localeCompare(b.date || ""));
 
   if (mode === "newest") copy.reverse();
@@ -74,14 +76,11 @@ function renderBlogList(posts) {
           <h2 class="blog-card-title">
             <a href="#blog/${p.slug}" class="blog-open" data-slug="${p.slug}">${p.title}</a>
           </h2>
-
           <div class="blog-card-body">
             <p class="blog-card-excerpt">${p.excerpt || ""}</p>
           </div>
-
           <p class="blog-card-date">${p.date || ""}</p>
         </div>
-
         <div class="blog-card-media ${emptyClass}">
           ${imgHtml}
         </div>
@@ -115,101 +114,259 @@ async function renderSinglePost(slug) {
 }
 
 // -------------------------
-// MAP: ASCII world map
-// Grid: 88 cols × 24 rows  |  lat 72°N → -55°S  |  lon -180° → 180°
+// PHOTOS
 // -------------------------
-const MAP_COLS = 88;
-const MAP_ROWS = 24;
-const MAP_LAT_TOP = 72;
-const MAP_LAT_BOTTOM = -55;
 
-// Per-row land ranges as [startCol, endCol] (inclusive)
-const MAP_LAND = [
-  [[31,38],[70,86]],                                            // 0  ~72°N
-  [[0,9],[30,39],[45,51],[52,87]],                              // 1  ~67°N
-  [[0,10],[9,24],[29,38],[41,43],[44,51],[48,87]],              // 2  ~62°N
-  [[12,35],[31,37],[41,44],[44,52],[47,82]],                    // 3  ~57°N
-  [[15,33],[41,44],[43,53],[47,77],[78,82]],                    // 4  ~52°N  ← EU cities
-  [[11,17],[19,34],[41,43],[43,47],[46,53],[49,74],[77,80]],    // 5  ~47°N  ← PNW, E Canada, Paris
-  [[11,18],[20,31],[43,52],[53,57],[52,72],[64,75],[73,76],[77,80]], // 6  ~42°N
-  [[11,30],[42,45],[44,52],[53,58],[57,63],[65,76],[77,79]],    // 7  ~37°N
-  [[12,17],[19,23],[22,30],[43,57],[53,59],[58,64],[65,75]],    // 8  ~32°N  ← Orlando
-  [[18,24],[23,27],[43,57],[54,62],[61,65],[64,73],[69,78]],    // 9  ~27°N
-  [[17,24],[24,28],[43,56],[55,63],[61,67],[68,78]],            // 10 ~22°N  ← Cancun
-  [[17,21],[20,22],[24,27],[43,48],[44,58],[57,64],[62,66],[67,78]], // 11 ~17°N
-  [[19,22],[24,27],[43,48],[44,60],[59,63],[62,65],[66,78]],    // 12 ~12°N
-  [[20,22],[24,27],[43,47],[47,61],[63,65],[65,77]],            // 13  ~7°N  ← Bogota
-  [[22,25],[43,46],[47,62],[64,76],[69,73]],                    // 14  ~2°N
-  [[22,31],[43,45],[48,61],[69,72],[70,77]],                    // 15  ~-3°S
-  [[23,31],[48,54],[52,62],[68,78],[68,80]],                    // 16  ~-8°S
-  [[24,31],[48,54],[55,61],[69,76],[68,82]],                    // 17  ~-13°S
-  [[24,30],[48,53],[56,61],[68,83]],                            // 18  ~-18°S
-  [[25,30],[49,58],[57,61],[68,83]],                            // 19  ~-23°S
-  [[26,30],[49,56],[69,81]],                                    // 20  ~-28°S
-  [[24,29],[50,55],[70,79]],                                    // 21  ~-33°S
-  [[23,28],[51,53],[70,77]],                                    // 22  ~-38°S
-  [[22,27],[81,83]],                                            // 23  ~-43°S
-];
+// Fisher-Yates shuffle (returns a new array)
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
 
-const MAP_CITIES = [
-  {name: "London, UK",        lat: 51.5,  lon:  -0.1},
-  {name: "Cambridge, UK",     lat: 52.2,  lon:   0.1},
-  {name: "Warsaw, Poland",    lat: 52.2,  lon:  21.0},
-  {name: "Paris, France",     lat: 48.8,  lon:   2.3},
-  {name: "Cancun, Mexico",    lat: 21.2,  lon: -86.8},
-  {name: "Bogota, Colombia",  lat:  4.7,  lon: -74.1},
-  {name: "Portland, US",      lat: 45.5,  lon:-122.7},
-  {name: "Orlando, FL",       lat: 28.5,  lon: -81.4},
-  {name: "Seattle, US",       lat: 47.6,  lon:-122.3},
-  {name: "London, Canada",    lat: 43.0,  lon: -81.2},
-  {name: "Montreal, Canada",  lat: 45.5,  lon: -73.6},
-  {name: "Niagara Falls, CA", lat: 43.1,  lon: -79.1},
-];
-
-function renderAsciiMap() {
-  const el = document.getElementById("ascii-map");
-  if (!el) return;
-
-  const LAT_RANGE = MAP_LAT_TOP - MAP_LAT_BOTTOM;
-  const grid = Array.from({length: MAP_ROWS}, () => new Array(MAP_COLS).fill(" "));
-
-  MAP_LAND.forEach((ranges, r) => {
-    ranges.forEach(([c1, c2]) => {
-      for (let c = c1; c <= c2; c++) {
-        if (c < MAP_COLS) grid[r][c] = ".";
-      }
-    });
-  });
-
-  function toGrid(lat, lon) {
-    return {
-      r: Math.round((MAP_LAT_TOP - lat) / LAT_RANGE * MAP_ROWS),
-      c: Math.round((lon + 180) / 360 * MAP_COLS),
-    };
+async function loadPhotos() {
+  let data;
+  try {
+    data = await fetchJson("data/photos.json");
+  } catch (e) {
+    data = { photos: [] };
   }
 
-  const pins = new Map();
-  MAP_CITIES.forEach(({name, lat, lon}) => {
-    const {r, c} = toGrid(lat, lon);
-    if (r >= 0 && r < MAP_ROWS && c >= 0 && c < MAP_COLS) {
-      const key = `${r},${c}`;
-      if (!pins.has(key)) pins.set(key, []);
-      pins.get(key).push(name);
+  // Build the tag list from the original order so the filter bar stays stable
+  const tagSet = new Set();
+  (data.photos || []).forEach((p) => (p.tags || []).forEach((t) => tagSet.add(t)));
+  const tags = [...tagSet];
+
+  // Shuffle the photos themselves so the wall feels fresh on every visit/reload
+  const photos = shuffle(data.photos || []);
+
+  // Render filter buttons
+  const filtersEl = document.getElementById("photo-filters");
+  if (filtersEl) {
+    filtersEl.innerHTML = "";
+
+    const allBtn = document.createElement("button");
+    allBtn.type = "button";
+    allBtn.className = "tag-filter is-active";
+    allBtn.dataset.tag = "all";
+    allBtn.textContent = "All";
+    filtersEl.appendChild(allBtn);
+
+    tags.forEach((tag) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "tag-filter";
+      btn.dataset.tag = tag;
+      btn.textContent = tag;
+      filtersEl.appendChild(btn);
+    });
+
+    filtersEl.addEventListener("click", (e) => {
+      const btn = e.target.closest(".tag-filter");
+      if (!btn) return;
+
+      filtersEl.querySelectorAll(".tag-filter").forEach((b) => {
+        b.classList.toggle("is-active", b === btn);
+      });
+
+      renderMosaic(photos, btn.dataset.tag);
+    });
+  }
+
+  renderMosaic(photos, "all");
+}
+
+function renderMosaic(photos, activeTag) {
+  const mosaic = document.getElementById("photo-mosaic");
+  if (!mosaic) return;
+
+  const filtered =
+    activeTag === "all"
+      ? photos
+      : photos.filter((p) => (p.tags || []).includes(activeTag));
+
+  mosaic.innerHTML = "";
+
+  if (!filtered.length) {
+    mosaic.innerHTML = '<p style="color: var(--ink-dim); font-size: 13px; grid-column: 1/-1;">No photos yet.</p>';
+    return;
+  }
+
+  filtered.forEach((photo) => {
+    const item = document.createElement("div");
+
+    // A "feature" photo becomes a big 2x2 hero; otherwise its aspect drives size
+    const sizeClass = photo.feature
+      ? "is-feature"
+      : photo.aspect
+      ? `is-${photo.aspect}`
+      : "";
+    item.className = "photo-item" + (sizeClass ? ` ${sizeClass}` : "");
+
+    if (photo.src) {
+      const img = document.createElement("img");
+      img.src = photo.src;
+      img.alt = photo.alt || "";
+      img.loading = "lazy";
+      img.decoding = "async";
+      item.appendChild(img);
+    } else {
+      item.dataset.empty = "[ img ]";
     }
+
+    mosaic.appendChild(item);
   });
+}
 
-  const lines = grid.map((row, r) =>
-    row.map((ch, c) => {
-      const key = `${r},${c}`;
-      if (pins.has(key)) {
-        const names = pins.get(key).join(" · ");
-        return `<span class="map-pin" title="${names}">●</span>`;
-      }
-      return ch === "." ? "." : " ";
-    }).join("")
-  );
+// -------------------------
+// MUSIC
+// -------------------------
+async function loadMusic() {
+  let data;
+  try {
+    data = await fetchJson("data/music.json");
+  } catch (e) {
+    data = { songs: [], sets: [] };
+  }
 
-  el.innerHTML = lines.join("\n");
+  renderMusicSongs(shuffle(data.songs || []));   // fresh order every load
+  renderMusicSets(shuffle(data.sets || []));     // fresh order every load
+}
+
+function renderMusicSongs(items) {
+  const list = document.getElementById("music-songs-list");
+  if (!list) return;
+  list.innerHTML = "";
+
+  items.forEach((item, i) => {
+    if (i > 0) list.appendChild(document.createElement("hr"));
+
+    const noteHtml = item.note ? `<p class="music-note">${item.note}</p>` : "";
+
+    const linksHtml = (item.links || [])
+      .map(
+        (l) =>
+          `<a class="music-link" href="${l.url}" target="_blank" rel="noopener">${l.label}</a>`
+      )
+      .join("");
+    const linksBlock = linksHtml ? `<div class="music-links">${linksHtml}</div>` : "";
+
+    const article = document.createElement("article");
+    article.className = "music-item";
+
+    if (item.embed) {
+      // Playable embedded Bandcamp player (artwork lives inside the embed)
+      article.innerHTML = `
+        <div class="music-meta">
+          <h2 class="music-title">${item.title}</h2>
+          <div class="music-sub">${item.sub || ""}</div>
+          ${noteHtml}
+          <div class="bc-embed">${item.embed}</div>
+          ${linksBlock}
+        </div>
+      `;
+    } else {
+      // Fallback: cover art + links
+      const artHtml = item.art
+        ? `<div class="art-frame"><img class="art" src="${item.art}" alt="${item.title} cover art" loading="lazy" /></div>`
+        : "";
+      article.innerHTML = `
+        <div class="music-row">
+          ${artHtml}
+          <div class="music-meta">
+            <h2 class="music-title">${item.title}</h2>
+            <div class="music-sub">${item.sub || ""}</div>
+            ${noteHtml}
+            ${linksBlock}
+          </div>
+        </div>
+      `;
+    }
+
+    list.appendChild(article);
+  });
+}
+
+function renderMusicSets(items) {
+  const list = document.getElementById("music-sets-list");
+  if (!list) return;
+  list.innerHTML = "";
+
+  items.forEach((item, i) => {
+    if (i > 0) list.appendChild(document.createElement("hr"));
+
+    const noteHtml = item.note ? `<p class="music-note">${item.note}</p>` : "";
+
+    const embedHtml = item.embed
+      ? `<div class="sc-embed">${item.embed}</div>`
+      : `<div class="sc-embed"><div class="sc-embed-placeholder">[ SoundCloud embed ]</div></div>`;
+
+    const linkHtml = item.link
+      ? `<div class="music-links"><a class="music-link" href="${item.link}" target="_blank" rel="noopener">SoundCloud</a></div>`
+      : "";
+
+    const article = document.createElement("article");
+    article.className = "music-item";
+    article.innerHTML = `
+      <div class="music-meta">
+        <h2 class="music-title">${item.title}</h2>
+        <div class="music-sub">${item.sub || ""}</div>
+        ${noteHtml}
+        ${embedHtml}
+        ${linkHtml}
+      </div>
+    `;
+    list.appendChild(article);
+  });
+}
+
+// -------------------------
+// LIBRARY
+// -------------------------
+async function loadLibrary() {
+  let data;
+  try {
+    data = await fetchJson("data/library.json");
+  } catch (e) {
+    data = { shelves: [] };
+  }
+
+  renderLibrary(data.shelves || []);
+}
+
+function renderLibrary(shelves) {
+  const bookshelf = document.getElementById("bookshelf");
+  if (!bookshelf) return;
+  bookshelf.innerHTML = "";
+
+  shelves.forEach((books) => {
+    const shelf = document.createElement("div");
+    shelf.className = "shelf";
+
+    books.forEach((book) => {
+      const classes = ["book"];
+      if (book.height === "tall")  classes.push("book--tall");
+      if (book.height === "short") classes.push("book--short");
+      if (book.width  === "wide")  classes.push("book--wide");
+      if (book.width  === "thin")  classes.push("book--thin");
+      if (book.status === "wishlist") classes.push("book--wishlist");
+      if (book.status === "reading")  classes.push("book--reading");
+
+      const div = document.createElement("div");
+      div.className = classes.join(" ");
+      div.title = `${book.title} — ${book.author}`;
+      div.innerHTML = `
+        <span class="book-title">${book.title}</span>
+        <span class="book-author">${book.author}</span>
+      `;
+      shelf.appendChild(div);
+    });
+
+    bookshelf.appendChild(shelf);
+  });
 }
 
 // -------------------------
@@ -246,12 +403,12 @@ async function render(page) {
     history.replaceState(null, "", `#${page}`);
   }
 
-  // If on Map, render the ASCII world map
-  if (page === "map") {
-    renderAsciiMap();
-  }
+  // Page-specific data loading
+  if (page === "photos")   await loadPhotos();
+  if (page === "music")    await loadMusic();
+  if (page === "library")  await loadLibrary();
 
-  // If on Blog list view, load posts
+  // Blog list view
   if (page === "blog") {
     let data;
     try {
@@ -299,10 +456,10 @@ function init() {
       const tabBtn = e.target.closest(".tab-btn[data-tab]");
       if (tabBtn) {
         const tabId = tabBtn.dataset.tab;
-        content.querySelectorAll(".tab-btn").forEach((b) => {
+        contentEl.querySelectorAll(".tab-btn").forEach((b) => {
           b.classList.toggle("is-active", b.dataset.tab === tabId);
         });
-        content.querySelectorAll(".tab-pane").forEach((p) => {
+        contentEl.querySelectorAll(".tab-pane").forEach((p) => {
           p.hidden = p.id !== `tab-${tabId}`;
         });
         return;

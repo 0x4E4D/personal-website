@@ -65,10 +65,11 @@ html, body {
    ========================= */
 .nav {
   display: flex;
-  gap: 10px;
+  gap: clamp(4px, 1.4vw, 12px);
   align-items: center;
   justify-content: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;          /* always a single row */
+  width: 100%;
 }
 
 .nav-btn {
@@ -77,10 +78,13 @@ html, body {
   border: none;
   background: transparent;
   color: var(--ink);
-  padding: 5px 3px;
+  padding: 5px 2px;
   cursor: pointer;
   font: inherit;
+  /* Fluid size: shrinks with the screen so the row never wraps */
+  font-size: clamp(0.8rem, 3.7vw, 1.3rem);
   line-height: 1;
+  white-space: nowrap;        /* keep "About Me" on one piece */
 }
 
 .nav-btn::before { content: '['; }
@@ -188,12 +192,37 @@ html, body {
 .content::-webkit-scrollbar-thumb:hover { background-color: var(--ink-dim); }
 
 /* =========================
+   ABOUT — portrait
+   ========================= */
+.about-photo {
+  float: right;
+  width: clamp(120px, 30vw, 190px);
+  height: auto;
+  margin: 4px 0 14px 18px;
+  border: 1px solid var(--ink);
+  background: var(--bg);
+  display: block;
+}
+
+/* Placeholder shown until the real photo is added */
+.about-photo--empty {
+  aspect-ratio: 3 / 4;
+  display: grid;
+  place-items: center;
+  background: var(--blue);
+  color: var(--ink);
+  opacity: 0.5;
+  font-size: 12px;
+}
+
+/* =========================
    ACKNOWLEDGEMENTS
    ========================= */
 .ack-divider {
   border: 0;
   border-top: 1px dashed var(--ink);
   margin: 28px 0 18px 0;
+  clear: both;          /* always sit below the floated About photo */
 }
 
 .ack-link {
@@ -304,6 +333,19 @@ html, body {
   border: 1px dashed var(--blue);
 }
 
+/* --- Bandcamp embed --- */
+.bc-embed {
+  margin-top: 10px;
+  border: 1px solid var(--ink);
+  overflow: hidden;
+  line-height: 0;
+}
+
+.bc-embed iframe {
+  display: block;
+  width: 100%;
+}
+
 /* --- Artist list --- */
 .artist-list {
   display: grid;
@@ -350,31 +392,79 @@ html, body {
 /* =========================
    PHOTOS
    ========================= */
-.photo-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  margin-top: 14px;
+
+/* Tag filter bar */
+.photo-filters {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.tag-filter {
+  appearance: none;
+  -webkit-appearance: none;
+  border: none;
+  background: transparent;
+  color: var(--ink);
+  padding: 3px 2px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1;
+}
+
+.tag-filter::before { content: '['; }
+.tag-filter::after  { content: ']'; }
+.tag-filter:hover { color: var(--red); }
+
+.tag-filter.is-active {
+  font-weight: 700;
+  color: var(--blue);
+}
+.tag-filter.is-active::before { content: '{'; }
+.tag-filter.is-active::after  { content: '}'; }
+
+/* Mosaic — masonry columns: full images, no cropping, packed tight */
+.photo-mosaic {
+  column-count: 3;
+  column-gap: 2px;
 }
 
 .photo-item {
+  break-inside: avoid;
+  margin: 0 0 2px 0;
   border: 1px solid var(--ink);
-  aspect-ratio: 1 / 1;
   overflow: hidden;
-  display: grid;
-  place-items: center;
   background: var(--blue);
-}
-
-.photo-item img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  position: relative;
   display: block;
 }
 
-.photo-placeholder {
-  font-size: 12px;
+/* Full image, scaled to column width, natural height (no crop) */
+.photo-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: transform 240ms ease;
+}
+
+/* Hover: subtle zoom + red outline, lifts above neighbors */
+.photo-item:hover {
+  outline: 2px solid var(--red);
+  outline-offset: -2px;
+  z-index: 1;
+}
+.photo-item:hover img { transform: scale(1.04); }
+
+.photo-item[data-empty] {
+  min-height: 120px;
+  display: grid;
+  place-items: center;
+}
+.photo-item[data-empty]::after {
+  content: attr(data-empty);
+  font-size: 11px;
   color: var(--ink);
   opacity: 0.4;
 }
@@ -407,20 +497,19 @@ html, body {
 .book {
   border: 1px solid var(--ink);
   width: 34px;
-  height: 120px;
+  min-height: 120px;     /* grows taller if the title needs it */
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 6px 3px 4px;
   flex-shrink: 0;
-  overflow: hidden;
   background: var(--bg);
   transition: background 100ms ease;
 }
 
-/* Height variants */
-.book--tall  { height: 150px; }
-.book--short { height: 90px; }
+/* Height variants (minimums — spines grow to fit long titles) */
+.book--tall  { min-height: 150px; }
+.book--short { min-height: 90px; }
 
 /* Width variants */
 .book--wide  { width: 46px; }
@@ -441,7 +530,7 @@ html, body {
   font-weight: 600;
   line-height: 1.2;
   flex: 1;
-  overflow: hidden;
+  white-space: nowrap;   /* full title on one line, no clipping */
   width: 100%;
   text-align: left;
   letter-spacing: 0.04em;
@@ -455,7 +544,6 @@ html, body {
   transform: rotate(180deg);
   font-size: 8px;
   color: var(--ink-dim);
-  overflow: hidden;
   width: 100%;
   text-align: left;
   border-top: 1px solid var(--border-faint);
@@ -466,38 +554,7 @@ html, body {
 }
 
 /* =========================
-   MAP
-   ========================= */
-.map-legend {
-  font-size: 12px;
-  color: var(--ink-dim);
-  margin: 0 0 12px 0;
-}
-
-.map-container {
-  overflow-x: auto;
-  border: 1px solid var(--ink);
-}
-
-.ascii-map {
-  margin: 0;
-  padding: 10px 12px;
-  font-family: inherit;
-  font-size: 10px;
-  line-height: 1.4;
-  color: var(--ink-dim);
-  white-space: pre;
-  letter-spacing: 0.08em;
-}
-
-.map-pin {
-  color: var(--red);
-  font-size: 11px;
-  cursor: help;
-}
-
-/* =========================
-   TIMELINE
+   TIMELINE — unified upload feed
    ========================= */
 .timeline {
   display: grid;
@@ -507,7 +564,7 @@ html, body {
 
 .timeline-entry {
   display: grid;
-  grid-template-columns: 70px 1fr;
+  grid-template-columns: 92px 1fr;
   gap: 16px;
   padding: 12px 0;
   border-bottom: 1px dashed var(--ink);
@@ -515,14 +572,74 @@ html, body {
 
 .timeline-entry:first-child { border-top: 1px dashed var(--ink); }
 
-.timeline-year {
-  font-size: 13px;
+.timeline-date {
+  font-size: 12px;
   color: var(--ink-dim);
-  padding-top: 2px;
+  padding-top: 3px;
+  white-space: nowrap;
 }
 
-.timeline-content { font-size: 14px; }
-.timeline-content p { margin: 0; }
+.timeline-content {
+  font-size: 14px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 12px;
+  align-items: start;
+}
+
+/* Type badge — bracketed, color-coded */
+.timeline-type {
+  font-size: 12px;
+  font-weight: 700;
+  grid-column: 1;
+  grid-row: 1;
+  padding-top: 1px;
+}
+.timeline-type--blog  { color: var(--blue); }
+.timeline-type--photo { color: var(--red); }
+.timeline-type--music { color: var(--ink); }
+.timeline-type--note  { color: var(--ink-dim); }
+
+/* Thumbnail (photos) — larger, full image (no crop) */
+.timeline-thumb {
+  grid-column: 2;
+  grid-row: 1;
+  width: clamp(150px, 32vw, 240px);
+  border: 1px solid var(--ink);
+  overflow: hidden;
+  background: var(--blue);
+  margin-bottom: 8px;
+}
+.timeline-thumb img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.timeline-body {
+  grid-column: 2;
+  grid-row: 2;
+}
+/* If there's no thumbnail, body sits on row 1 next to the badge */
+.timeline-content:not(:has(.timeline-thumb)) .timeline-body {
+  grid-row: 1;
+}
+
+.timeline-name { font-weight: 600; }
+
+.timeline-text {
+  margin: 2px 0 0 0;
+  font-size: 13px;
+  color: var(--ink-dim);
+  line-height: 1.35;
+}
+
+.timeline-link {
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--blue);
+}
+.timeline-link:hover { color: var(--red); text-decoration: underline; }
 
 /* =========================
    BLOG (Timeline Cards)
@@ -674,11 +791,9 @@ html, body {
   .top-bar      { border-bottom-width: 3px; }
   .inner-frame  { border-width: 2px; }
 
-  .nav { gap: 6px; }
-
   .blog-card-inner { grid-template-columns: 1fr; }
 
-  .photo-grid { grid-template-columns: repeat(2, 1fr); }
+  .photo-mosaic { column-count: 2; }
 
   .shelf { gap: 3px; }
   .book  { width: 28px; font-size: 8px; }

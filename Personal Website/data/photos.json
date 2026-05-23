@@ -1,0 +1,229 @@
+{
+  "photos": [
+    {
+      "src": "photos/art-1.jpg",
+      "alt": "",
+      "aspect": "portrait",
+      "tags": [
+        "art"
+      ],
+      "date": "2022-10-15"
+    },
+    {
+      "src": "photos/art-2.jpg",
+      "alt": "",
+      "aspect": "portrait",
+      "tags": [
+        "art"
+      ],
+      "date": "2022-10-15"
+    },
+    {
+      "src": "photos/art-3.jpg",
+      "alt": "",
+      "aspect": "portrait",
+      "tags": [
+        "art"
+      ],
+      "date": "2022-10-15"
+    },
+    {
+      "src": "photos/concerts-gorillaz-1.jpg",
+      "alt": "",
+      "aspect": "landscape",
+      "tags": [
+        "concerts"
+      ],
+      "date": "2022-10-09"
+    },
+    {
+      "src": "photos/concerts-gorillaz-2.jpg",
+      "alt": "",
+      "aspect": "landscape",
+      "tags": [
+        "concerts"
+      ],
+      "date": "2022-10-09"
+    },
+    {
+      "src": "photos/concerts-techno-1.jpg",
+      "alt": "",
+      "aspect": "landscape",
+      "tags": [
+        "concerts"
+      ],
+      "date": "2025-02-08"
+    },
+    {
+      "src": "photos/nature-1.jpg",
+      "alt": "",
+      "aspect": "portrait",
+      "tags": [
+        "nature"
+      ],
+      "date": "2024-05-11"
+    },
+    {
+      "src": "photos/nike-1.jpg",
+      "alt": "",
+      "aspect": "portrait",
+      "tags": [
+        "nike"
+      ],
+      "date": "2021-10-08"
+    },
+    {
+      "src": "photos/nike-2.jpg",
+      "alt": "",
+      "aspect": "portrait",
+      "tags": [
+        "nike"
+      ],
+      "date": "2021-10-03"
+    },
+    {
+      "src": "photos/nike-3.jpg",
+      "alt": "",
+      "aspect": "portrait",
+      "tags": [
+        "nike"
+      ],
+      "date": "2022-10-10"
+    },
+    {
+      "src": "photos/nike-4.jpg",
+      "alt": "",
+      "aspect": "landscape",
+      "tags": [
+        "nike"
+      ],
+      "date": "2022-09-23"
+    },
+    {
+      "src": "photos/nike-5.jpg",
+      "alt": "",
+      "aspect": "portrait",
+      "tags": [
+        "nike"
+      ],
+      "date": "2024-01-05"
+    },
+    {
+      "src": "photos/nike-6.jpg",
+      "alt": "",
+      "aspect": "portrait",
+      "tags": [
+        "nike"
+      ],
+      "date": "2026-04-25"
+    },
+    {
+      "src": "photos/nike-7.jpg",
+      "alt": "",
+      "aspect": "portrait",
+      "tags": [
+        "nike"
+      ],
+      "date": "2023-07-13"
+    },
+    {
+      "src": "photos/travel-cancun-1.jpg",
+      "alt": "",
+      "aspect": "portrait",
+      "tags": [
+        "travel"
+      ],
+      "date": "2025-10-12"
+    },
+    {
+      "src": "photos/travel-london-1.jpg",
+      "alt": "",
+      "aspect": "portrait",
+      "tags": [
+        "travel"
+      ],
+      "date": "2018-05-02"
+    },
+    {
+      "src": "photos/travel-london-2.jpg",
+      "alt": "",
+      "aspect": "portrait",
+      "tags": [
+        "travel"
+      ],
+      "date": "2018-05-05"
+    },
+    {
+      "src": "photos/travel-london-3.jpg",
+      "alt": "",
+      "aspect": "square",
+      "tags": [
+        "travel"
+      ],
+      "date": "2018-06-01"
+    },
+    {
+      "src": "photos/travel-london-4.jpg",
+      "alt": "",
+      "aspect": "square",
+      "tags": [
+        "travel"
+      ],
+      "date": "2018-06-01"
+    },
+    {
+      "src": "photos/travel-london-5.jpg",
+      "alt": "",
+      "aspect": "landscape",
+      "tags": [
+        "travel"
+      ],
+      "date": "2018-06-10"
+    },
+    {
+      "src": "photos/travel-montreal-1.jpg",
+      "alt": "",
+      "aspect": "portrait",
+      "tags": [
+        "travel"
+      ],
+      "date": "2021-11-05"
+    },
+    {
+      "src": "photos/travel-montreal-2.jpg",
+      "alt": "",
+      "aspect": "portrait",
+      "tags": [
+        "travel"
+      ],
+      "date": "2021-11-05"
+    },
+    {
+      "src": "photos/travel-montreal-3.jpg",
+      "alt": "",
+      "aspect": "portrait",
+      "tags": [
+        "travel"
+      ],
+      "date": "2021-11-05"
+    },
+    {
+      "src": "photos/travel-montreal-4.jpg",
+      "alt": "",
+      "aspect": "landscape",
+      "tags": [
+        "travel"
+      ],
+      "date": "2022-10-14"
+    },
+    {
+      "src": "photos/travel-montreal-5.jpg",
+      "alt": "",
+      "aspect": "portrait",
+      "tags": [
+        "travel"
+      ],
+      "date": "2025-02-06"
+    }
+  ]
+}

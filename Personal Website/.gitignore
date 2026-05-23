@@ -1,0 +1,8 @@
+# macOS
+.DS_Store
+
+# Local dev preview config
+.claude/
+
+# Original full-res photos (kept local only — not needed for the site)
+photos/_originals/
