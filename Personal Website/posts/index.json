@@ -1,0 +1,11 @@
+{
+  "posts": [
+    {
+      "slug": "first-post",
+      "title": "The Vibe Blog Poster",
+      "date": "01/15/2026",
+      "excerpt": "My first (public) blog post ever! or should I say... Hello World!",
+      "image": ""
+    }
+  ]
+}

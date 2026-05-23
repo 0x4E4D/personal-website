@@ -1,0 +1,5 @@
+Make image in blogs page square
+
+Move the back button to the right
+
+

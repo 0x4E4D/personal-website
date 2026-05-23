@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>010011</title>
+    <meta name="description" content="Personal website — writing, photos, music, and notes." />
+
+    <link rel="stylesheet" href="styles.css?v=6" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <div class="outer-frame">
+      <header class="top-bar">
+        <nav class="nav" aria-label="Primary">
+          <button class="nav-btn" data-page="about" type="button">About Me</button>
+          <button class="nav-btn" data-page="photos" type="button">Photos</button>
+          <button class="nav-btn" data-page="music" type="button">Music</button>
+          <button class="nav-btn" data-page="blog" type="button">Blog</button>
+          <button class="nav-btn" data-page="map" type="button">Map</button>
+          <button class="nav-btn" data-page="library" type="button">Library</button>
+          <button class="nav-btn" data-page="timeline" type="button">Timeline</button>
+        </nav>
+      </header>
+
+      <main class="center-wrap">
+        <section class="inner-frame" aria-label="Content frame">
+          <div id="content" class="content" role="region" aria-live="polite"></div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Content templates -->
+    <template id="tpl-about">
+      <h1>About Me</h1>
+
+      <p>
+        You'll probably see a lot about myself here except for my name, and I'll sometimes be a bit
+        cryptic just because it's cool, and I want to keep my identity private.
+      </p>
+
+      <p>
+        I'm also sure there's probably someone smarter than me that can easily uncover my identity,
+        but I don't really care.
+      </p>
+
+      <p>
+        I'm a very curious person and I really like doing stuff. I live for the sense of
+        accomplishment. Even if it's just paying my 3-day overdue internet bill.
+      </p>
+
+      <p>
+        Professionally, I consider myself an Entrepreneur, and it's actually in my job title so I
+        suppose I am one. I started a business when I was 21 and I ran it – to the ground – for four
+        years.
+      </p>
+
+      <p>
+        I learned A LOT from FITFOing around to convert ideas and efforts into dollars and once it
+        worked there was no way back. So, in summary, I'm a dude that thinks, has a computer with a
+        reliable internet connection, and makes things happen.
+      </p>
+
+      <p>
+        This website is just a way for me to express myself freely. I'll post whatever, I'll delete
+        things, and I may even bring it down. But for now, I'm honestly just having fun typing
+        letters on a computer... beep boop.
+      </p>
+
+      <p>
+        Thanks for reading all the way through! I hope you enjoy looking at this rectangle with text
+        a little longer :)
+      </p>
+
+      <hr class="ack-divider" />
+      <p class="ack-link">
+        <a href="#acknowledgements" data-page="acknowledgements">Acknowledgements</a>
+      </p>
+    </template>
+
+    <template id="tpl-acknowledgements">
+      <h1>Acknowledgements</h1>
+      <p>This page exists to thank the people who, knowingly or not, shaped me.</p>
+      <p>Some offered guidance. Some offered patience. Some simply stayed.</p>
+      <p>You know who you are.</p>
+    </template>
+
+    <template id="tpl-photos">
+      <h1>Photos</h1>
+      <p>Film, digital, and whatever's in between.</p>
+      <div class="photo-grid">
+        <div class="photo-item"><span class="photo-placeholder">—</span></div>
+        <div class="photo-item"><span class="photo-placeholder">—</span></div>
+        <div class="photo-item"><span class="photo-placeholder">—</span></div>
+        <div class="photo-item"><span class="photo-placeholder">—</span></div>
+        <div class="photo-item"><span class="photo-placeholder">—</span></div>
+        <div class="photo-item"><span class="photo-placeholder">—</span></div>
+      </div>
+    </template>
+
+    <template id="tpl-music">
+      <h1>Music</h1>
+
+      <div class="section-tabs" role="tablist">
+        <button class="tab-btn is-active" data-tab="bandcamp" type="button">Bandcamp</button>
+        <button class="tab-btn" data-tab="soundcloud" type="button">SoundCloud</button>
+        <button class="tab-btn" data-tab="artists" type="button">Artists</button>
+      </div>
+
+      <!-- BANDCAMP -->
+      <div class="tab-pane" id="tab-bandcamp">
+        <section class="music-list">
+          <article class="music-item">
+            <div class="music-row">
+              <div class="art-frame">
+                <img class="art" src="art/late-night.jpg" alt="Late Night cover art" loading="lazy" />
+              </div>
+              <div class="music-meta">
+                <h2 class="music-title">Late Night</h2>
+                <div class="music-sub">Playlist • Ambient • 2026</div>
+                <p class="music-note">Sparse, repetitive, low light.</p>
+                <div class="music-links">
+                  <a class="music-link" href="https://music.apple.com/..." target="_blank" rel="noopener">Apple Music</a>
+                  <a class="music-link" href="https://youtube.com/..." target="_blank" rel="noopener">YouTube</a>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <hr />
+
+          <article class="music-item">
+            <div class="music-row">
+              <div class="art-frame">
+                <img class="art" src="art/burial-untrue.jpg" alt="Untrue cover art" loading="lazy" />
+              </div>
+              <div class="music-meta">
+                <h2 class="music-title">Untrue</h2>
+                <div class="music-sub">Album • Burial • 2007</div>
+                <div class="music-links">
+                  <a class="music-link" href="https://music.apple.com/..." target="_blank" rel="noopener">Apple Music</a>
+                  <a class="music-link" href="https://open.spotify.com/..." target="_blank" rel="noopener">Spotify</a>
+                </div>
+              </div>
+            </div>
+          </article>
+        </section>
+      </div>
+
+      <!-- SOUNDCLOUD -->
+      <div class="tab-pane" id="tab-soundcloud" hidden>
+        <section class="music-list">
+          <article class="music-item">
+            <div class="music-meta">
+              <h2 class="music-title">Set Title One</h2>
+              <div class="music-sub">Set • DJ / Artist • 2024</div>
+              <p class="music-note">A note about what this set means to you.</p>
+              <div class="sc-embed">
+                <!-- paste SoundCloud iframe here, e.g.:
+                <iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay"
+                  src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/..."></iframe>
+                -->
+                <div class="sc-embed-placeholder">[ SoundCloud embed ]</div>
+              </div>
+              <div class="music-links">
+                <a class="music-link" href="https://soundcloud.com/..." target="_blank" rel="noopener">SoundCloud</a>
+              </div>
+            </div>
+          </article>
+
+          <hr />
+
+          <article class="music-item">
+            <div class="music-meta">
+              <h2 class="music-title">Set Title Two</h2>
+              <div class="music-sub">Set • DJ / Artist • 2023</div>
+              <p class="music-note">Another set you keep coming back to.</p>
+              <div class="sc-embed">
+                <div class="sc-embed-placeholder">[ SoundCloud embed ]</div>
+              </div>
+              <div class="music-links">
+                <a class="music-link" href="https://soundcloud.com/..." target="_blank" rel="noopener">SoundCloud</a>
+              </div>
+            </div>
+          </article>
+        </section>
+      </div>
+
+      <!-- ARTISTS -->
+      <div class="tab-pane" id="tab-artists" hidden>
+        <div class="artist-list">
+          <div class="artist-item">
+            <span class="artist-name">Artist Name</span>
+            <span class="artist-genre">Genre · Location</span>
+            <a class="artist-link" href="https://bandcamp.com/..." target="_blank" rel="noopener">→</a>
+          </div>
+          <div class="artist-item">
+            <span class="artist-name">Another Artist</span>
+            <span class="artist-genre">Genre · Location</span>
+            <a class="artist-link" href="https://bandcamp.com/..." target="_blank" rel="noopener">→</a>
+          </div>
+          <div class="artist-item">
+            <span class="artist-name">Artist Three</span>
+            <span class="artist-genre">Genre · Location</span>
+            <a class="artist-link" href="https://bandcamp.com/..." target="_blank" rel="noopener">→</a>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <template id="tpl-library">
+      <h1>Library</h1>
+      <p class="library-legend">
+        solid = read &nbsp;·&nbsp; dashed = wishlist &nbsp;·&nbsp; double = reading
+      </p>
+
+      <div class="bookshelf-room">
+
+        <div class="shelf">
+          <div class="book book--tall" title="Dune — Frank Herbert">
+            <span class="book-title">Dune</span>
+            <span class="book-author">Herbert</span>
+          </div>
+          <div class="book book--tall book--wide" title="Infinite Jest — David Foster Wallace">
+            <span class="book-title">Infinite Jest</span>
+            <span class="book-author">Wallace</span>
+          </div>
+          <div class="book book--short book--thin book--wishlist" title="The Stranger — Albert Camus">
+            <span class="book-title">The Stranger</span>
+            <span class="book-author">Camus</span>
+          </div>
+          <div class="book book--reading" title="Siddhartha — Hermann Hesse">
+            <span class="book-title">Siddhartha</span>
+            <span class="book-author">Hesse</span>
+          </div>
+          <div class="book book--tall book--wide" title="Moby Dick — Herman Melville">
+            <span class="book-title">Moby Dick</span>
+            <span class="book-author">Melville</span>
+          </div>
+          <div class="book book--short book--wishlist" title="1984 — George Orwell">
+            <span class="book-title">1984</span>
+            <span class="book-author">Orwell</span>
+          </div>
+          <div class="book book--thin book--wishlist" title="On the Road — Jack Kerouac">
+            <span class="book-title">On the Road</span>
+            <span class="book-author">Kerouac</span>
+          </div>
+        </div>
+
+        <div class="shelf">
+          <div class="book book--wide" title="Book Title — Author">
+            <span class="book-title">Book Title</span>
+            <span class="book-author">Author</span>
+          </div>
+          <div class="book book--tall book--thin book--wishlist" title="Book Title — Author">
+            <span class="book-title">Book Title</span>
+            <span class="book-author">Author</span>
+          </div>
+          <div class="book book--short book--reading" title="Book Title — Author">
+            <span class="book-title">Book Title</span>
+            <span class="book-author">Author</span>
+          </div>
+          <div class="book book--wishlist" title="Book Title — Author">
+            <span class="book-title">Book Title</span>
+            <span class="book-author">Author</span>
+          </div>
+          <div class="book book--tall book--wide" title="Book Title — Author">
+            <span class="book-title">Book Title</span>
+            <span class="book-author">Author</span>
+          </div>
+          <div class="book book--short book--thin" title="Book Title — Author">
+            <span class="book-title">Book Title</span>
+            <span class="book-author">Author</span>
+          </div>
+        </div>
+
+      </div>
+    </template>
+
+    <template id="tpl-map">
+      <h1>Map</h1>
+      <p class="map-legend">● visited &nbsp;·&nbsp; hover pin for city name</p>
+      <div class="map-container">
+        <pre id="ascii-map" class="ascii-map"></pre>
+      </div>
+    </template>
+
+    <template id="tpl-timeline">
+      <h1>Timeline</h1>
+      <div class="timeline">
+        <!-- entries go here -->
+      </div>
+    </template>
+
+    <!-- UPDATED BLOG TEMPLATE -->
+    <template id="tpl-blog">
+      <div class="blog-head">
+        <h1 class="blog-title">Blog</h1>
+
+        <div class="blog-toolbar">
+          <label class="blog-sort">
+            <span>Sort</span>
+            <select id="blog-sort" class="blog-sort-select">
+              <option value="newest">Newest</option>
+              <option value="oldest">Oldest</option>
+              <option value="title">Title</option>
+            </select>
+          </label>
+        </div>
+      </div>
+
+      <div id="blog-list" class="blog-list" aria-label="Blog posts list">
+        <!-- JS renders timeline cards here -->
+      </div>
+    </template>
+
+    <script src="app.js"></script>
+  </body>
+</html>
+
