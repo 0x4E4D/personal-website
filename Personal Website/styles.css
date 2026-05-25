@@ -148,6 +148,7 @@ html, body {
   align-items: stretch;
   justify-content: center;
   min-height: 0;
+  min-width: 0;        /* grid item: allow shrinking below content width */
 }
 
 .inner-frame {
@@ -158,6 +159,7 @@ html, body {
 
   display: flex;
   min-height: 0;
+  min-width: 0;        /* allow shrinking below content (e.g. wide embeds) */
   padding: 0;
 }
 
@@ -167,6 +169,7 @@ html, body {
 .content {
   width: 100%;
   min-height: 0;
+  min-width: 0;        /* flex child: allow shrinking below content width */
 
   overflow-y: auto;
   overflow-x: hidden;
@@ -244,11 +247,13 @@ html, body {
    ========================= */
 .music-list {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);   /* column can shrink below content */
   gap: 0;
 }
 
 .music-item {
   padding: 14px 0;
+  min-width: 0;        /* grid item: allow shrinking below content width */
 }
 
 .music-row {
