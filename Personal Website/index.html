@@ -10,6 +10,10 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Speed up embeds: warm DNS/TLS to Bandcamp & SoundCloud -->
+    <link rel="preconnect" href="https://bandcamp.com" />
+    <link rel="preconnect" href="https://w.soundcloud.com" />
+    <link rel="preconnect" href="https://api.soundcloud.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
@@ -39,7 +43,7 @@
 
     <!-- Content templates -->
     <template id="tpl-about">
-      <img class="about-photo" src="photos/me.jpg" alt="A photo of me" />
+      <img class="about-photo" src="photos/me.jpg" alt="A photo of me" fetchpriority="high" decoding="async" />
       <h1>About Me</h1>
 
       <p>Hi! It's Nico :)</p>
@@ -146,7 +150,7 @@
       </div>
     </template>
 
-    <script src="app.js?v=8"></script>
+    <script src="app.js?v=9" defer></script>
 
     <!-- Cloudflare Web Analytics -->
     <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "46a1318ee0254df0850fc78a26707bd2"}'></script>

@@ -195,7 +195,7 @@ function renderMosaic(photos, activeTag) {
     return;
   }
 
-  filtered.forEach((photo) => {
+  filtered.forEach((photo, idx) => {
     const item = document.createElement("div");
 
     // A "feature" photo becomes a big 2x2 hero; otherwise its aspect drives size
@@ -212,6 +212,8 @@ function renderMosaic(photos, activeTag) {
       img.alt = photo.alt || "";
       img.loading = "lazy";
       img.decoding = "async";
+      // Mark the first photo as high-priority so it loads ASAP (helps LCP)
+      if (idx === 0) img.setAttribute("fetchpriority", "high");
       item.appendChild(img);
     } else {
       item.dataset.empty = "[ img ]";
@@ -219,6 +221,12 @@ function renderMosaic(photos, activeTag) {
 
     mosaic.appendChild(item);
   });
+}
+
+// Inject loading="lazy" into iframe embeds (defers off-screen players,
+// big win on the Music page which has 20+ embeds)
+function lazyEmbed(html) {
+  return (html || "").replace(/<iframe(?![^>]*\bloading=)/i, '<iframe loading="lazy"');
 }
 
 // -------------------------
@@ -264,7 +272,7 @@ function renderMusicSongs(items) {
           <h2 class="music-title">${item.title}</h2>
           <div class="music-sub">${item.sub || ""}</div>
           ${noteHtml}
-          <div class="bc-embed">${item.embed}</div>
+          <div class="bc-embed">${lazyEmbed(item.embed)}</div>
           ${linksBlock}
         </div>
       `;
@@ -301,7 +309,7 @@ function renderMusicSets(items) {
     const noteHtml = item.note ? `<p class="music-note">${item.note}</p>` : "";
 
     const embedHtml = item.embed
-      ? `<div class="sc-embed">${item.embed}</div>`
+      ? `<div class="sc-embed">${lazyEmbed(item.embed)}</div>`
       : `<div class="sc-embed"><div class="sc-embed-placeholder">[ SoundCloud embed ]</div></div>`;
 
     const linkHtml = item.link
@@ -430,9 +438,12 @@ async function render(page) {
 }
 
 function init() {
-  // Top nav buttons
+  // Top nav buttons — defer the heavy render so the button's active state
+  // paints first (keeps INP snappy)
   document.querySelectorAll(".nav-btn").forEach((btn) => {
-    btn.addEventListener("click", () => render(btn.dataset.page));
+    btn.addEventListener("click", () => {
+      requestAnimationFrame(() => render(btn.dataset.page));
+    });
   });
 
   // Delegate clicks inside content (back links, acknowledgements link, blog titles)
@@ -448,7 +459,7 @@ function init() {
         if (location.hash !== `#${page}`) {
           history.replaceState(null, "", `#${page}`);
         }
-        await render(page);
+        requestAnimationFrame(() => render(page));
         return;
       }
 
@@ -472,7 +483,7 @@ function init() {
         const slug = blogLink.dataset.slug;
 
         history.replaceState(null, "", `#blog/${slug}`);
-        await render("blog");
+        requestAnimationFrame(() => render("blog"));
       }
     });
   }
