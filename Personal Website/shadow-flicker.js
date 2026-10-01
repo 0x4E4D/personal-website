@@ -5,7 +5,7 @@
    Or:    ShadowFlicker.apply(imgElement, { focus, spread, strength, dash, levels, speed, contrast })
    Images must be same-origin (or served with CORS headers). */
 (function () {
-  const DEFAULTS = { focus: 0.4, spread: 0.15, strength: 1, line: 0, mode: 'flicker', rate: 15, dash: 4, levels: 6, speed: 1, contrast: 1.2, fps: 24, showMask: false };
+  const DEFAULTS = { focus: 0.4, spread: 0.15, strength: 1, line: 0, mode: 'flicker', rate: 15, dash: 4, levels: 6, speed: 1, contrast: 1.2, fps: 24, showMask: false, maxWidth: 0, maxScale: 0 };
   const hash = (a, b, c) => { let h = (a * 374761393 + b * 668265263 + c * 2246822519) | 0; h = (h ^ (h >>> 13)) * 1274126177; return ((h ^ (h >>> 16)) >>> 0) / 4294967295; };
 
   function apply(img, opts) {
@@ -18,7 +18,17 @@
     const t0 = performance.now(), still = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     function setup() {
-      w = Math.min(img.naturalWidth, 1600); h = Math.round(w * img.naturalHeight / img.naturalWidth);
+      // Backing store size. Rendering far above display size costs memory and
+      // render time for detail nobody sees: this retains 24 bytes/px (base 12 +
+      // lumA 4 + frame 4 + canvas 4) for the life of the page. maxScale caps it
+      // at a multiple of the element's laid-out width; maxWidth is an absolute
+      // cap. Both default to 0 (off) -> the original 1600 ceiling. L and dash
+      // scale with w, so stripe size in SCREEN pixels is unchanged either way.
+      var disp = Math.round(img.getBoundingClientRect().width) || 0;
+      var cap = o.maxWidth > 0 ? o.maxWidth
+              : (o.maxScale > 0 && disp > 0 ? Math.ceil(disp * o.maxScale) : 0);
+      if (!(cap > 64)) cap = 1600;
+      w = Math.min(img.naturalWidth, cap); h = Math.round(w * img.naturalHeight / img.naturalWidth);
       canvas.width = w; canvas.height = h;
       ctx.drawImage(img, 0, 0, w, h);
       const src = ctx.getImageData(0, 0, w, h).data;

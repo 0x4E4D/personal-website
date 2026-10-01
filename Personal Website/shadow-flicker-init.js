@@ -36,11 +36,21 @@
     // re-renders each frame ~3.4x for a byte-identical result (verified:
     // 0 of 750,000 pixels differ). Matching fps to rate cuts ~71% of the
     // main-thread work with no visual change.
-    fps: 7
+    fps: 7,
+
+    // Render at 2x the element's displayed width instead of up to 1600px.
+    // Each converted image retains 24 bytes/px for the life of the page and
+    // nothing is ever freed (the IntersectionObserver pauses rendering, not
+    // allocation), so a 1000x1000 photo cost ~23MB and the mosaic ~448MB --
+    // past the ~300-400MB where mobile Safari kills a tab, and growing ~17MB
+    // per photo added. Stripe size in screen pixels is unaffected because L
+    // and dash both scale with canvas width.
+    maxScale: 2
   };
 
   var KEYS = ["focus", "spread", "strength", "line", "mode", "rate",
-              "dash", "levels", "speed", "contrast", "fps", "showMask"];
+              "dash", "levels", "speed", "contrast", "fps", "showMask",
+              "maxWidth", "maxScale"];
 
   // getImageData() throws on a cross-origin image, which would leave a blank
   // canvas in place of a working <img>. Everything on this site is local, but
