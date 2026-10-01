@@ -2,7 +2,13 @@
   /* Palette */
   --bg:          #EFEFEF;
   --ink:         #282828;
-  --blue:        #ADD1E7;
+  /* Accent: links, titles, active nav. #ADD1E7 scored 1.4:1 on --bg,
+     effectively invisible; this is 5.03:1 and passes AA. */
+  --blue:        #1668AF;
+  /* The old light blue, kept for placeholder fills that sit BEHIND images
+     or carry --ink text ([ img ] tiles, book hover). The accent would be
+     2.55:1 there, so these must not follow it. */
+  --blue-tint:   #ADD1E7;
   --red:         #E77C79;
   --ink-dim:     #6a6a6a;
   --ink-faint:   #aaaaaa;
@@ -213,7 +219,7 @@ html, body {
   aspect-ratio: 3 / 4;
   display: grid;
   place-items: center;
-  background: var(--blue);
+  background: var(--blue-tint);
   color: var(--ink);
   opacity: 0.5;
   font-size: 12px;
@@ -268,7 +274,7 @@ html, body {
   height: 80px;
   border: 1px solid var(--ink);
   overflow: hidden;
-  background: var(--blue);
+  background: var(--blue-tint);
 }
 
 .art {
@@ -449,13 +455,14 @@ html, body {
   margin: 0 0 2px 0;
   border: 1px solid var(--ink);
   overflow: hidden;
-  background: var(--blue);
+  background: var(--blue-tint);
   position: relative;
   display: block;
 }
 
 /* Full image, scaled to column width, natural height (no crop) */
-.photo-item img {
+.photo-item img,
+.photo-item canvas {
   width: 100%;
   height: auto;
   display: block;
@@ -468,7 +475,8 @@ html, body {
   outline-offset: -2px;
   z-index: 1;
 }
-.photo-item:hover img { transform: scale(1.04); }
+.photo-item:hover img,
+.photo-item:hover canvas { transform: scale(1.04); }
 
 .photo-item[data-empty] {
   min-height: 120px;
@@ -532,7 +540,7 @@ html, body {
 .book--wishlist { border-style: dashed; }
 .book--reading  { border: 2px double var(--ink); }
 
-.book:hover { background: var(--blue); cursor: default; }
+.book:hover { background: var(--blue-tint); cursor: default; }
 
 /* Title — reads bottom to top */
 .book-title {
@@ -620,10 +628,11 @@ html, body {
   width: clamp(150px, 32vw, 240px);
   border: 1px solid var(--ink);
   overflow: hidden;
-  background: var(--blue);
+  background: var(--blue-tint);
   margin-bottom: 8px;
 }
-.timeline-thumb img {
+.timeline-thumb img,
+.timeline-thumb canvas {
   width: 100%;
   height: auto;
   display: block;
@@ -746,10 +755,11 @@ html, body {
   overflow: hidden;
   display: grid;
   place-items: center;
-  background: var(--blue);
+  background: var(--blue-tint);
 }
 
-.blog-card-media img {
+.blog-card-media img,
+.blog-card-media canvas {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -777,6 +787,52 @@ html, body {
   margin-top: 0;
   font-size: 13px;
   color: var(--ink-dim);
+}
+
+.blog-post-body img,
+.blog-post-body canvas {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 18px 0;
+  border: 1px solid var(--ink);
+}
+
+/* Dictionary-style definition block */
+.definition {
+  margin: 18px 0 22px;
+  padding: 12px 0 12px 16px;
+  border-left: 3px solid var(--blue);
+}
+
+.definition dt {
+  margin: 0;
+  line-height: 1.4;
+}
+
+.definition-word {
+  font-weight: 700;
+  font-size: 17px;
+}
+
+.definition-pos {
+  font-style: italic;
+  font-size: 13px;
+  color: var(--ink-dim);
+  margin-left: 8px;
+}
+
+/* Hanging indent so the sense number sits in the gutter, like a real entry */
+.definition dd {
+  margin: 8px 0 0;
+  padding-left: 1.6em;
+  text-indent: -1.6em;
+}
+
+.definition dd::before {
+  content: "1.";
+  color: var(--ink-dim);
+  margin-right: 0.6em;
 }
 
 .blog-post-body hr {
