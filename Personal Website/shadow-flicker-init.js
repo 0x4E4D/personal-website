@@ -13,13 +13,22 @@
 
   // Nico's preset.
   var PRESET = {
-    focus: 0.47,
-    spread: 0.22,
+    // focus is an ABSOLUTE luminance target, not a relative "shadows" pick, so
+    // values tuned against a single demo image don't transfer to a library with
+    // mixed exposures. At focus .47 / spread .22 the mask spanned luminance
+    // .035-.905 -- 84% of pixels across these 25 photos, 100% on four of them.
+    // .22 / .08 keeps it in genuine shadow: ~38% touched, ~16% strongly.
+    focus: 0.22,
+    spread: 0.08,
     strength: 1,
     dash: 4,
     levels: 7,
     rate: 7,
-    contrast: 1.15,
+    // Must stay 1. setup() applies contrast to every pixel BEFORE the mask, and
+    // unmasked pixels are written from that buffer -- so any value but 1 alters
+    // 100% of the image however tight the mask is (verified: tight mask at 1.15
+    // changed every pixel; the same mask at 1.0 left highlights untouched).
+    contrast: 1,
 
     // Not in the original spec, but free: the loop throttles at
     // 1000 / max(fps, rate), and in flicker mode the output is a pure
