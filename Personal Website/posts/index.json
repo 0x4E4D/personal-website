@@ -1,6 +1,13 @@
 {
   "posts": [
     {
+      "slug": "fafo",
+      "title": "F*cking Around and Finding Out",
+      "date": "09/30/2026",
+      "excerpt": "FAFO usually shows up as someone eating pavement on camera. I think it's actually a way of moving through life — and a pretty good one.",
+      "image": ""
+    },
+    {
       "slug": "first-post",
       "title": "The Vibe Blog Poster",
       "date": "01/15/2026",
