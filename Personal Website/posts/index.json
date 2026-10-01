@@ -2,10 +2,10 @@
   "posts": [
     {
       "slug": "fafo",
-      "title": "F*cking Around and Finding Out",
+      "title": "F*ck Around & Find Out 101",
       "date": "09/30/2026",
-      "excerpt": "FAFO usually shows up as someone eating pavement on camera. I think it's actually a way of moving through life — and a pretty good one.",
-      "image": ""
+      "excerpt": "Hey look it's me doing what I'm just writing about. Pushing keys on my computer and following an instinct or drive to see what comes out on the other end. Confused? Read this!",
+      "image": "photos/fafo-101.webp"
     },
     {
       "slug": "first-post",
