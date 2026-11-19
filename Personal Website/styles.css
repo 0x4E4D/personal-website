@@ -842,9 +842,198 @@ html, body {
 }
 
 /* =========================
+   DIGITAL GALLERY
+   ========================= */
+
+.gallery-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.frame-switch {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.frame-switch-label { color: var(--ink-dim); }
+
+.frame-opt {
+  font: inherit;
+  font-size: 12px;
+  padding: 2px 9px;
+  border: 1px solid var(--border-faint);
+  background: transparent;
+  color: var(--ink-dim);
+  cursor: pointer;
+}
+
+.frame-opt.is-active {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+
+/* One picture at a time, scrolled like a hang rather than a contact sheet */
+.gallery-feed {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 56px;
+  padding: 26px 0 40px;
+}
+
+.gframe {
+  margin: 0;
+  width: 100%;
+}
+
+/* Frame size follows the picture's proportions */
+.gframe.is-portrait  { max-width: 440px; }
+.gframe.is-square    { max-width: 500px; }
+.gframe.is-landscape { max-width: 580px; }
+
+/* The whole picture, always -- no cropping anywhere in here.
+   canvas is listed because shadow-flicker swaps the <img> for one. */
+.gframe-window img,
+.gframe-window canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.gframe-plate {
+  margin-top: 12px;
+  text-align: center;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+
+/* Four mouldings. Same palettes feed both families so the A/B compares
+   construction, not colour. */
+.gframe--v1 { --fr-lo:#7d5f16; --fr-mid:#b8912f; --fr-hi:#e3c76d; --mat:#f3ecdc; }
+.gframe--v2 { --fr-lo:#3f2a16; --fr-mid:#6b4a2b; --fr-hi:#9d7447; --mat:#efe6d4; }
+.gframe--v3 { --fr-lo:#141414; --fr-mid:#333333; --fr-hi:#5c5c5c; --mat:#e9e9e6; }
+.gframe--v4 { --fr-lo:#27443f; --fr-mid:#3f6b63; --fr-hi:#6a9c92; --mat:#eaeee8; }
+
+/* ---------- A: pixel art ----------
+   Every edge is a hard box-shadow step, so the moulding reads as stacked
+   blocks with no antialiasing -- the look of a frame drawn on a grid. */
+.frames--pixel .gframe-mat {
+  padding: 9px;
+  background: var(--fr-mid);
+  box-shadow:
+    inset 0 0 0 3px var(--fr-hi),
+    inset 0 0 0 6px var(--fr-lo),
+    0 0 0 3px var(--fr-lo),
+    0 0 0 6px var(--fr-hi),
+    0 0 0 9px var(--fr-lo);
+}
+
+.frames--pixel .gframe-window {
+  padding: 15px;
+  background: var(--mat);
+  box-shadow: inset 0 0 0 2px var(--fr-lo);
+}
+
+/* Chunkier, fewer steps */
+.frames--pixel .gframe--v2 .gframe-mat {
+  padding: 13px;
+  box-shadow:
+    inset 0 0 0 4px var(--fr-lo),
+    0 0 0 4px var(--fr-hi),
+    0 0 0 8px var(--fr-lo);
+}
+
+/* Thin and many-stepped */
+.frames--pixel .gframe--v3 .gframe-mat {
+  padding: 6px;
+  box-shadow:
+    inset 0 0 0 2px var(--fr-hi),
+    inset 0 0 0 4px var(--fr-lo),
+    0 0 0 2px var(--fr-lo),
+    0 0 0 4px var(--fr-hi),
+    0 0 0 6px var(--fr-lo),
+    0 0 0 8px var(--fr-hi),
+    0 0 0 10px var(--fr-lo);
+}
+
+/* Dentil teeth along the moulding, hard stops only */
+.frames--pixel .gframe--v4 .gframe-mat {
+  padding: 12px;
+  background:
+    repeating-linear-gradient(90deg,
+      var(--fr-mid) 0 6px, var(--fr-hi) 6px 12px);
+  box-shadow:
+    inset 0 0 0 4px var(--fr-lo),
+    0 0 0 3px var(--fr-lo),
+    0 0 0 7px var(--fr-mid),
+    0 0 0 10px var(--fr-lo);
+}
+
+/* ---------- B: classic ----------
+   Same mouldings rendered as real ones: raked gradient for the gilt, an
+   inner bevel, and the frame casting a shadow onto the page. */
+.frames--classic .gframe-mat {
+  padding: 17px;
+  border-radius: 2px;
+  background: linear-gradient(135deg,
+    var(--fr-hi) 0%, var(--fr-mid) 32%, var(--fr-lo) 64%, var(--fr-mid) 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.28),
+    inset 0 0 16px rgba(0, 0, 0, 0.42),
+    0 12px 26px rgba(0, 0, 0, 0.26),
+    0 2px 6px rgba(0, 0, 0, 0.18);
+}
+
+.frames--classic .gframe-window {
+  padding: 20px;
+  background: var(--mat);
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.28),
+    inset 0 3px 10px rgba(0, 0, 0, 0.16);
+}
+
+.frames--classic .gframe--v2 .gframe-mat {
+  padding: 22px;
+  background: linear-gradient(118deg,
+    var(--fr-mid) 0%, var(--fr-hi) 18%, var(--fr-lo) 58%, var(--fr-mid) 100%);
+}
+
+.frames--classic .gframe--v3 .gframe-mat {
+  padding: 11px;
+  border-radius: 1px;
+  background: linear-gradient(150deg,
+    var(--fr-hi) 0%, var(--fr-lo) 45%, var(--fr-mid) 100%);
+}
+
+.frames--classic .gframe--v4 .gframe-mat {
+  padding: 19px;
+  background: linear-gradient(135deg,
+    var(--fr-hi) 0%, var(--fr-mid) 40%, var(--fr-lo) 72%, var(--fr-hi) 100%);
+}
+
+/* =========================
    MOBILE
    ========================= */
 @media (max-width: 640px) {
+  /* Gallery: tighter mouldings and spacing so a framed picture still fits */
+  .gallery-feed { gap: 38px; padding: 20px 0 28px; }
+  .gframe.is-portrait,
+  .gframe.is-square,
+  .gframe.is-landscape { max-width: 100%; }
+  .frames--pixel .gframe-window { padding: 10px; }
+  .frames--classic .gframe-mat { padding: 12px; }
+  .frames--classic .gframe--v2 .gframe-mat { padding: 15px; }
+  .frames--classic .gframe--v4 .gframe-mat { padding: 13px; }
+  .frames--classic .gframe-window { padding: 13px; }
+  .gallery-controls { flex-direction: column; align-items: flex-start; }
+
   :root {
     --gap: 10px;
     --inner-max: 100%;

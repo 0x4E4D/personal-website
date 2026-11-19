@@ -172,55 +172,117 @@ async function loadPhotos() {
         b.classList.toggle("is-active", b === btn);
       });
 
-      renderMosaic(photos, btn.dataset.tag);
+      renderGallery(photos, btn.dataset.tag);
     });
   }
 
-  renderMosaic(photos, "all");
+  renderGallery(photos, "all");
+  initFrameSwitch();
 }
 
-function renderMosaic(photos, activeTag) {
-  const mosaic = document.getElementById("photo-mosaic");
-  if (!mosaic) return;
+// Stable per-photo frame pick: the same picture always hangs in the same
+// frame, but neighbours differ. Seeded from the filename so it survives the
+// shuffle, and nudged by aspect so portraits and landscapes get frames cut
+// for their proportions.
+function frameFor(photo) {
+  const src = photo.src || "";
+  let h = 7;
+  for (let i = 0; i < src.length; i++) h = (h * 31 + src.charCodeAt(i)) | 0;
+  const variant = (Math.abs(h) % 4) + 1;
+  const aspect = photo.aspect || "portrait";
+  return { variant, aspect };
+}
+
+function plateText(photo) {
+  const tags = (photo.tags || []).join(" \u00b7 ");
+  const year = (photo.date || "").slice(0, 4);
+  return [tags, year].filter(Boolean).join("  \u2014  ");
+}
+
+function renderGallery(photos, activeTag) {
+  const feed = document.getElementById("gallery-feed");
+  if (!feed) return;
 
   const filtered =
     activeTag === "all"
       ? photos
       : photos.filter((p) => (p.tags || []).includes(activeTag));
 
-  mosaic.innerHTML = "";
+  feed.innerHTML = "";
 
   if (!filtered.length) {
-    mosaic.innerHTML = '<p style="color: var(--ink-dim); font-size: 13px; grid-column: 1/-1;">No photos yet.</p>';
+    feed.innerHTML = '<p style="color: var(--ink-dim); font-size: 13px;">Nothing hung under that tag yet.</p>';
     return;
   }
 
   filtered.forEach((photo, idx) => {
-    const item = document.createElement("div");
+    if (!photo.src) return;
 
-    // A "feature" photo becomes a big 2x2 hero; otherwise its aspect drives size
-    const sizeClass = photo.feature
-      ? "is-feature"
-      : photo.aspect
-      ? `is-${photo.aspect}`
-      : "";
-    item.className = "photo-item" + (sizeClass ? ` ${sizeClass}` : "");
+    const { variant, aspect } = frameFor(photo);
 
-    if (photo.src) {
-      const img = document.createElement("img");
-      img.src = photo.src;
-      img.alt = photo.alt || "";
-      img.loading = "lazy";
-      img.decoding = "async";
-      // Mark the first photo as high-priority so it loads ASAP (helps LCP)
-      if (idx === 0) img.setAttribute("fetchpriority", "high");
-      item.appendChild(img);
-    } else {
-      item.dataset.empty = "[ img ]";
+    const fig = document.createElement("figure");
+    fig.className = `gframe gframe--v${variant} is-${aspect}`;
+
+    const mat = document.createElement("div");
+    mat.className = "gframe-mat";
+
+    const win = document.createElement("div");
+    win.className = "gframe-window";
+
+    const img = document.createElement("img");
+    img.src = photo.src;
+    img.alt = photo.alt || "";
+    img.loading = "lazy";
+    img.decoding = "async";
+    // Shown far larger here than in the old mosaic, so cap the effect's
+    // backing store tighter than the site default to keep the feed affordable.
+    img.dataset.maxScale = "1.25";
+    if (idx === 0) img.setAttribute("fetchpriority", "high");
+
+    win.appendChild(img);
+    mat.appendChild(win);
+    fig.appendChild(mat);
+
+    const plate = plateText(photo);
+    if (plate) {
+      const cap = document.createElement("figcaption");
+      cap.className = "gframe-plate";
+      cap.textContent = plate;
+      fig.appendChild(cap);
     }
 
-    mosaic.appendChild(item);
+    feed.appendChild(fig);
   });
+}
+
+// Pixel vs classic frames, side by side for comparison. Remembered per
+// browser so a choice survives a reload; wrapped because storage throws in
+// private mode.
+function initFrameSwitch(onChange) {
+  const sw = document.querySelector(".frame-switch");
+  const feed = document.getElementById("gallery-feed");
+  if (!sw || !feed) return;
+
+  let saved = null;
+  try { saved = localStorage.getItem("gallery-frames"); } catch (e) {}
+  const start = saved === "classic" || saved === "pixel" ? saved : "pixel";
+  apply(start);
+
+  sw.addEventListener("click", (e) => {
+    const btn = e.target.closest(".frame-opt");
+    if (!btn) return;
+    apply(btn.dataset.frames);
+    try { localStorage.setItem("gallery-frames", btn.dataset.frames); } catch (e2) {}
+    if (onChange) onChange(btn.dataset.frames);
+  });
+
+  function apply(mode) {
+    feed.classList.toggle("frames--pixel", mode === "pixel");
+    feed.classList.toggle("frames--classic", mode === "classic");
+    sw.querySelectorAll(".frame-opt").forEach((b) => {
+      b.classList.toggle("is-active", b.dataset.frames === mode);
+    });
+  }
 }
 
 // Inject loading="lazy" into iframe embeds (defers off-screen players,

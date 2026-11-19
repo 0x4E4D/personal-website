@@ -6,7 +6,7 @@
     <title>010011</title>
     <meta name="description" content="Personal website — writing, photos, music, and notes." />
 
-    <link rel="stylesheet" href="styles.css?v=24" />
+    <link rel="stylesheet" href="styles.css?v=25" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -25,7 +25,7 @@
       <header class="top-bar">
         <nav class="nav" aria-label="Primary">
           <button class="nav-btn" data-page="about" type="button">About Me</button>
-          <button class="nav-btn" data-page="photos" type="button">Photos</button>
+          <button class="nav-btn" data-page="photos" type="button">Gallery</button>
           <button class="nav-btn" data-page="music" type="button">Music</button>
           <button class="nav-btn" data-page="blog" type="button">Blog</button>
           <!-- Library is archived: template, data and the #library route are all
@@ -87,13 +87,22 @@
     </template>
 
     <template id="tpl-photos">
-      <h1>Photos</h1>
-      <p>Film, digital, and whatever's in between.</p>
-      <div id="photo-filters" class="photo-filters" role="group" aria-label="Filter by tag">
-        <!-- JS renders filter buttons here -->
+      <h1>Digital Gallery</h1>
+      <p>A fresh hang every visit. Film, digital, and whatever's in between.</p>
+
+      <div class="gallery-controls">
+        <div id="photo-filters" class="photo-filters" role="group" aria-label="Filter by tag">
+          <!-- JS renders filter buttons here -->
+        </div>
+        <div class="frame-switch" role="group" aria-label="Frame style">
+          <span class="frame-switch-label">frames</span>
+          <button type="button" class="frame-opt is-active" data-frames="pixel">pixel</button>
+          <button type="button" class="frame-opt" data-frames="classic">classic</button>
+        </div>
       </div>
-      <div id="photo-mosaic" class="photo-mosaic" aria-label="Photo gallery">
-        <!-- JS renders photos here -->
+
+      <div id="gallery-feed" class="gallery-feed frames--pixel" aria-label="Digital gallery">
+        <!-- JS renders framed photos here -->
       </div>
     </template>
 
@@ -151,7 +160,7 @@
       </div>
     </template>
 
-    <script src="app.js?v=9" defer></script>
+    <script src="app.js?v=10" defer></script>
     <script src="shadow-flicker.js?v=1" defer></script>
     <script src="shadow-flicker-init.js?v=1" defer></script>
 
