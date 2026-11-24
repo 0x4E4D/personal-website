@@ -25,17 +25,28 @@ function setActiveButton(page) {
 // -------------------------
 // FETCH HELPERS
 // -------------------------
-async function fetchJson(path) {
-  const res = await fetch(path, { cache: "no-store" });
-  if (!res.ok) throw new Error(`Failed to load ${path}`);
-  return res.json();
+// Each file is fetched at most once per visit and shared by every caller.
+// "no-cache" still checks with the server (so a fresh deploy shows up on the
+// next reload) but an unchanged file comes back as a tiny 304 instead of a
+// full re-download, which is what "no-store" was forcing on every click.
+const fetchCache = new Map();
+
+function fetchOnce(path, read) {
+  const key = `${read}:${path}`;
+  if (!fetchCache.has(key)) {
+    const p = fetch(path, { cache: "no-cache" }).then((res) => {
+      if (!res.ok) throw new Error(`Failed to load ${path}`);
+      return res[read]();
+    });
+    // Don't remember failures: let the next visit try again
+    p.catch(() => fetchCache.delete(key));
+    fetchCache.set(key, p);
+  }
+  return fetchCache.get(key);
 }
 
-async function fetchText(path) {
-  const res = await fetch(path, { cache: "no-store" });
-  if (!res.ok) throw new Error(`Failed to load ${path}`);
-  return res.text();
-}
+const fetchJson = (path) => fetchOnce(path, "json");
+const fetchText = (path) => fetchOnce(path, "text");
 
 // -------------------------
 // BLOG
@@ -65,7 +76,7 @@ function renderBlogList(posts) {
     card.className = "blog-card";
 
     const imgHtml = p.image
-      ? `<img src="${p.image}" alt="" loading="lazy" />`
+      ? `<img src="${p.image}" alt="" loading="lazy" decoding="async" />`
       : "";
 
     const emptyClass = p.image ? "" : "is-empty";
@@ -91,16 +102,17 @@ function renderBlogList(posts) {
   });
 }
 
-async function renderSinglePost(slug) {
-  const content = document.getElementById("content");
-  if (!content) return;
+async function renderSinglePost(slug, view, token) {
+  // Both requests in parallel rather than one after the other
+  const [index, bodyHtml] = await Promise.all([
+    fetchJson("posts/index.json"),
+    fetchText(`posts/${slug}.html`),
+  ]);
+  if (token !== navToken) return; // user already navigated elsewhere
 
-  const index = await fetchJson("posts/index.json");
   const post = (index.posts || []).find((p) => p.slug === slug);
 
-  const bodyHtml = await fetchText(`posts/${slug}.html`);
-
-  content.innerHTML = `
+  view.innerHTML = `
     <a class="blog-back" href="#blog" data-page="blog">← Back</a>
     <h1>${post?.title || "Post"}</h1>
     ${post?.date ? `<p class="blog-post-date">${post.date}</p>` : ""}
@@ -109,8 +121,7 @@ async function renderSinglePost(slug) {
       ${bodyHtml}
     </div>
   `;
-
-  content.scrollTop = 0;
+  view.dataset.slug = slug;
 }
 
 // -------------------------
@@ -127,12 +138,15 @@ function shuffle(arr) {
   return a;
 }
 
+// Returns false if the data couldn't be fetched (render() then rebuilds
+// the page on the next visit instead of keeping the empty version).
 async function loadPhotos() {
-  let data;
+  let data, ok = true;
   try {
     data = await fetchJson("data/photos.json");
   } catch (e) {
     data = { photos: [] };
+    ok = false;
   }
 
   // Build the tag list from the original order so the filter bar stays stable
@@ -172,31 +186,48 @@ async function loadPhotos() {
         b.classList.toggle("is-active", b === btn);
       });
 
-      renderMosaic(photos, btn.dataset.tag);
+      filterMosaic(btn.dataset.tag);
     });
   }
 
-  renderMosaic(photos, "all");
+  buildMosaic(photos);
+  return ok;
 }
 
-function renderMosaic(photos, activeTag) {
+// Every photo is built once; the tag filter just shows/hides them, so
+// switching filters never re-downloads or re-processes an image.
+function filterMosaic(activeTag) {
   const mosaic = document.getElementById("photo-mosaic");
   if (!mosaic) return;
 
-  const filtered =
-    activeTag === "all"
-      ? photos
-      : photos.filter((p) => (p.tags || []).includes(activeTag));
+  let shown = 0;
+  mosaic.querySelectorAll(".photo-item").forEach((item) => {
+    const tags = (item.dataset.tags || "").split(" ");
+    const show = activeTag === "all" || tags.includes(activeTag);
+    item.hidden = !show;
+    if (show) shown++;
+  });
 
-  mosaic.innerHTML = "";
+  const empty = mosaic.querySelector(".photo-empty");
+  if (empty) empty.hidden = shown > 0;
+}
 
-  if (!filtered.length) {
-    mosaic.innerHTML = '<p style="color: var(--ink-dim); font-size: 13px; grid-column: 1/-1;">No photos yet.</p>';
+function buildMosaic(photos) {
+  const mosaic = document.getElementById("photo-mosaic");
+  if (!mosaic) return;
+
+  mosaic.innerHTML =
+    '<p class="photo-empty" hidden style="color: var(--ink-dim); font-size: 13px;">No photos yet.</p>';
+
+  if (!photos.length) {
+    mosaic.querySelector(".photo-empty").hidden = false;
     return;
   }
 
-  filtered.forEach((photo, idx) => {
+  const frag = document.createDocumentFragment();
+  photos.forEach((photo, idx) => {
     const item = document.createElement("div");
+    item.dataset.tags = (photo.tags || []).join(" ");
 
     // A "feature" photo becomes a big 2x2 hero; otherwise its aspect drives size
     const sizeClass = photo.feature
@@ -208,8 +239,17 @@ function renderMosaic(photos, activeTag) {
 
     if (photo.src) {
       const img = document.createElement("img");
-      img.src = photo.src;
+      // Web-sized copy made by tools/build_thumbs.py; falls back to the original
+      img.src = photo.thumb || photo.src;
       img.alt = photo.alt || "";
+      // Real dimensions let the browser reserve each tile's space up front:
+      // without them every tile starts 0px tall, the whole wall counts as
+      // "on screen", lazy-loading fetches everything at once, and the columns
+      // jump around as images arrive.
+      if (photo.width && photo.height) {
+        img.width = photo.width;
+        img.height = photo.height;
+      }
       img.loading = "lazy";
       img.decoding = "async";
       // Mark the first photo as high-priority so it loads ASAP (helps LCP)
@@ -219,8 +259,9 @@ function renderMosaic(photos, activeTag) {
       item.dataset.empty = "[ img ]";
     }
 
-    mosaic.appendChild(item);
+    frag.appendChild(item);
   });
+  mosaic.appendChild(frag);
 }
 
 // Inject loading="lazy" into iframe embeds (defers off-screen players,
@@ -232,16 +273,20 @@ function lazyEmbed(html) {
 // -------------------------
 // MUSIC
 // -------------------------
+// Returns false if the data couldn't be fetched (render() then rebuilds
+// the page on the next visit instead of keeping the empty version).
 async function loadMusic() {
-  let data;
+  let data, ok = true;
   try {
     data = await fetchJson("data/music.json");
   } catch (e) {
     data = { songs: [], sets: [] };
+    ok = false;
   }
 
   renderMusicSongs(shuffle(data.songs || []));   // fresh order every load
   renderMusicSets(shuffle(data.sets || []));     // fresh order every load
+  return ok;
 }
 
 function renderMusicSongs(items) {
@@ -334,15 +379,19 @@ function renderMusicSets(items) {
 // -------------------------
 // LIBRARY
 // -------------------------
+// Returns false if the data couldn't be fetched (render() then rebuilds
+// the page on the next visit instead of keeping the empty version).
 async function loadLibrary() {
-  let data;
+  let data, ok = true;
   try {
     data = await fetchJson("data/library.json");
   } catch (e) {
     data = { shelves: [] };
+    ok = false;
   }
 
   renderLibrary(data.shelves || []);
+  return ok;
 }
 
 function renderLibrary(shelves) {
@@ -380,29 +429,69 @@ function renderLibrary(shelves) {
 // -------------------------
 // RENDER
 // -------------------------
+// Each page is built the first time it's opened and then kept (hidden) while
+// you look at other pages. Coming back is instant: photos don't re-download
+// or re-process, music players don't reload (and keep playing), and you land
+// where you left off. A full reload still gives a fresh shuffle.
+const views = new Map(); // page name -> its container inside #content
+let navToken = 0;         // bumps on every navigation; stale async work checks it
+
+function showView(name) {
+  const content = document.getElementById("content");
+  let view = views.get(name);
+  let isNew = !view;
+  // Its data failed to load last time: start over so it refetches
+  if (view && view.dataset.stale) {
+    delete view.dataset.stale;
+    view.innerHTML = "";
+    isNew = true;
+  }
+  if (!view) {
+    view = document.createElement("div");
+    view.className = "page-view";
+    view.dataset.view = name;
+    views.set(name, view);
+    content.appendChild(view);
+  }
+
+  const current = [...views.values()].find((v) => !v.hidden && v !== view);
+  if (current) {
+    current.dataset.scroll = content.scrollTop;
+    current.hidden = true;
+  }
+
+  const wasShown = !view.hidden && !isNew;
+  view.hidden = false;
+  // Re-clicking the page you're already on scrolls back to the top
+  content.scrollTop = wasShown ? 0 : +(view.dataset.scroll || 0);
+  return { view, isNew };
+}
+
 async function render(page) {
   const content = document.getElementById("content");
   if (!content) return;
+  const token = ++navToken;
 
   // Only treat #blog/<slug> as a single-post route IF we're rendering the Blog page
   const rawHash = (location.hash || "").replace("#", "").trim();
   if (page === "blog" && rawHash.startsWith("blog/")) {
     setActiveButton("blog");
     const slug = rawHash.split("/")[1];
+    const { view } = showView("post");
+    if (view.dataset.slug === slug) return; // already showing this post
+    view.innerHTML = "";
+    view.dataset.slug = "";
     try {
-      await renderSinglePost(slug);
+      await renderSinglePost(slug, view, token);
+      if (token === navToken) content.scrollTop = 0;
     } catch (e) {
-      content.innerHTML = `<h1>Blog</h1><p>Could not load post.</p>`;
+      if (token === navToken) view.innerHTML = `<h1>Blog</h1><p>Could not load post.</p>`;
     }
     return;
   }
 
   const tpl = document.getElementById(`tpl-${page}`);
   if (!tpl) return;
-
-  content.innerHTML = "";
-  content.appendChild(tpl.content.cloneNode(true));
-  content.scrollTop = 0;
 
   setActiveButton(page);
 
@@ -411,10 +500,16 @@ async function render(page) {
     history.replaceState(null, "", `#${page}`);
   }
 
+  const { view, isNew } = showView(page);
+  if (!isNew) return; // already built: just shown again
+
+  view.appendChild(tpl.content.cloneNode(true));
+
   // Page-specific data loading
-  if (page === "photos")   await loadPhotos();
-  if (page === "music")    await loadMusic();
-  if (page === "library")  await loadLibrary();
+  let ok = true;
+  if (page === "photos")   ok = await loadPhotos();
+  if (page === "music")    ok = await loadMusic();
+  if (page === "library")  ok = await loadLibrary();
 
   // Blog list view
   if (page === "blog") {
@@ -423,6 +518,7 @@ async function render(page) {
       data = await fetchJson("posts/index.json");
     } catch (e) {
       data = { posts: [] };
+      ok = false;
     }
 
     const sortEl = document.getElementById("blog-sort");
@@ -435,6 +531,10 @@ async function render(page) {
       };
     }
   }
+
+  // Couldn't load this page's data (e.g. a dropped connection): show the empty
+  // state for now, but rebuild and refetch the next time the page is opened.
+  if (!ok) view.dataset.stale = "1";
 }
 
 function init() {
@@ -442,7 +542,10 @@ function init() {
   // paints first (keeps INP snappy)
   document.querySelectorAll(".nav-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
-      requestAnimationFrame(() => render(btn.dataset.page));
+      // Drop any sub-route (#blog/<slug>) so "Blog" goes back to the list
+      const page = btn.dataset.page;
+      if (location.hash !== `#${page}`) history.replaceState(null, "", `#${page}`);
+      requestAnimationFrame(() => render(page));
     });
   });
 

@@ -330,6 +330,11 @@ html, body {
   overflow: hidden;
 }
 
+/* SoundCloud's embed code ships a line of grey credit links after the
+   player. Inside this bordered box it made the box ~14px taller than the
+   player; the → SoundCloud link below already covers it. */
+.sc-embed > :not(iframe):not(.sc-embed-placeholder) { display: none; }
+
 .sc-embed iframe {
   display: block;
   /* iOS Safari ignores width:100% on iframes & expands to content width;
@@ -352,6 +357,9 @@ html, body {
 /* --- Bandcamp embed --- */
 .bc-embed {
   margin-top: 10px;
+  /* Bandcamp's player tops out at 700px wide; on a wider column the bordered
+     box kept stretching past the player and left an empty strip inside it. */
+  max-width: 700px;
   border: 1px solid var(--ink);
   overflow: hidden;
   line-height: 0;
@@ -477,6 +485,9 @@ html, body {
 }
 .photo-item:hover img,
 .photo-item:hover canvas { transform: scale(1.04); }
+
+/* Filtered-out photos (the class above sets display, which beats [hidden]) */
+.photo-item[hidden] { display: none; }
 
 .photo-item[data-empty] {
   min-height: 120px;
