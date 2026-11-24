@@ -7,7 +7,10 @@
       "tags": [
         "art"
       ],
-      "date": "2022-10-15"
+      "date": "2022-10-15",
+      "width": 750,
+      "height": 1000,
+      "thumb": "photos/thumbs/art-1.webp"
     },
     {
       "src": "photos/art-2.jpg",
@@ -16,7 +19,10 @@
       "tags": [
         "art"
       ],
-      "date": "2022-10-15"
+      "date": "2022-10-15",
+      "width": 750,
+      "height": 1000,
+      "thumb": "photos/thumbs/art-2.webp"
     },
     {
       "src": "photos/art-3.jpg",
@@ -25,7 +31,10 @@
       "tags": [
         "art"
       ],
-      "date": "2022-10-15"
+      "date": "2022-10-15",
+      "width": 750,
+      "height": 1000,
+      "thumb": "photos/thumbs/art-3.webp"
     },
     {
       "src": "photos/concerts-gorillaz-1.jpg",
@@ -34,7 +43,10 @@
       "tags": [
         "concerts"
       ],
-      "date": "2022-10-09"
+      "date": "2022-10-09",
+      "width": 1000,
+      "height": 562,
+      "thumb": "photos/thumbs/concerts-gorillaz-1.webp"
     },
     {
       "src": "photos/concerts-gorillaz-2.jpg",
@@ -43,7 +55,10 @@
       "tags": [
         "concerts"
       ],
-      "date": "2022-10-09"
+      "date": "2022-10-09",
+      "width": 1000,
+      "height": 562,
+      "thumb": "photos/thumbs/concerts-gorillaz-2.webp"
     },
     {
       "src": "photos/concerts-techno-1.jpg",
@@ -52,7 +67,10 @@
       "tags": [
         "concerts"
       ],
-      "date": "2025-02-08"
+      "date": "2025-02-08",
+      "width": 750,
+      "height": 1000,
+      "thumb": "photos/thumbs/concerts-techno-1.webp"
     },
     {
       "src": "photos/nature-1.jpg",
@@ -61,7 +79,10 @@
       "tags": [
         "nature"
       ],
-      "date": "2024-05-11"
+      "date": "2024-05-11",
+      "width": 750,
+      "height": 1000,
+      "thumb": "photos/thumbs/nature-1.webp"
     },
     {
       "src": "photos/nike-1.jpg",
@@ -70,7 +91,10 @@
       "tags": [
         "nike"
       ],
-      "date": "2021-10-08"
+      "date": "2021-10-08",
+      "width": 800,
+      "height": 1000,
+      "thumb": "photos/thumbs/nike-1.webp"
     },
     {
       "src": "photos/nike-2.jpg",
@@ -79,7 +103,10 @@
       "tags": [
         "nike"
       ],
-      "date": "2021-10-03"
+      "date": "2021-10-03",
+      "width": 750,
+      "height": 1000,
+      "thumb": "photos/thumbs/nike-2.webp"
     },
     {
       "src": "photos/nike-3.jpg",
@@ -88,7 +115,10 @@
       "tags": [
         "nike"
       ],
-      "date": "2022-10-10"
+      "date": "2022-10-10",
+      "width": 750,
+      "height": 1000,
+      "thumb": "photos/thumbs/nike-3.webp"
     },
     {
       "src": "photos/nike-4.jpg",
@@ -97,7 +127,10 @@
       "tags": [
         "nike"
       ],
-      "date": "2022-09-23"
+      "date": "2022-09-23",
+      "width": 750,
+      "height": 1000,
+      "thumb": "photos/thumbs/nike-4.webp"
     },
     {
       "src": "photos/nike-5.jpg",
@@ -106,7 +139,10 @@
       "tags": [
         "nike"
       ],
-      "date": "2024-01-05"
+      "date": "2024-01-05",
+      "width": 750,
+      "height": 1000,
+      "thumb": "photos/thumbs/nike-5.webp"
     },
     {
       "src": "photos/nike-6.jpg",
@@ -115,7 +151,10 @@
       "tags": [
         "nike"
       ],
-      "date": "2026-04-25"
+      "date": "2026-04-25",
+      "width": 739,
+      "height": 1000,
+      "thumb": "photos/thumbs/nike-6.webp"
     },
     {
       "src": "photos/nike-7.jpg",
@@ -124,7 +163,10 @@
       "tags": [
         "nike"
       ],
-      "date": "2023-07-13"
+      "date": "2023-07-13",
+      "width": 750,
+      "height": 1000,
+      "thumb": "photos/thumbs/nike-7.webp"
     },
     {
       "src": "photos/travel-cancun-1.jpg",
@@ -133,7 +175,10 @@
       "tags": [
         "travel"
       ],
-      "date": "2025-10-12"
+      "date": "2025-10-12",
+      "width": 750,
+      "height": 1000,
+      "thumb": "photos/thumbs/travel-cancun-1.webp"
     },
     {
       "src": "photos/travel-london-1.jpg",
@@ -142,7 +187,10 @@
       "tags": [
         "travel"
       ],
-      "date": "2018-05-02"
+      "date": "2018-05-02",
+      "width": 750,
+      "height": 1000,
+      "thumb": "photos/thumbs/travel-london-1.webp"
     },
     {
       "src": "photos/travel-london-2.jpg",
@@ -151,7 +199,10 @@
       "tags": [
         "travel"
       ],
-      "date": "2018-05-05"
+      "date": "2018-05-05",
+      "width": 750,
+      "height": 1000,
+      "thumb": "photos/thumbs/travel-london-2.webp"
     },
     {
       "src": "photos/travel-london-3.jpg",
@@ -160,7 +211,10 @@
       "tags": [
         "travel"
       ],
-      "date": "2018-06-01"
+      "date": "2018-06-01",
+      "width": 1000,
+      "height": 1000,
+      "thumb": "photos/thumbs/travel-london-3.webp"
     },
     {
       "src": "photos/travel-london-4.jpg",
@@ -169,7 +223,10 @@
       "tags": [
         "travel"
       ],
-      "date": "2018-06-01"
+      "date": "2018-06-01",
+      "width": 1000,
+      "height": 1000,
+      "thumb": "photos/thumbs/travel-london-4.webp"
     },
     {
       "src": "photos/travel-london-5.jpg",
@@ -178,7 +235,10 @@
       "tags": [
         "travel"
       ],
-      "date": "2018-06-10"
+      "date": "2018-06-10",
+      "width": 1000,
+      "height": 564,
+      "thumb": "photos/thumbs/travel-london-5.webp"
     },
     {
       "src": "photos/travel-montreal-1.jpg",
@@ -187,7 +247,10 @@
       "tags": [
         "travel"
       ],
-      "date": "2021-11-05"
+      "date": "2021-11-05",
+      "width": 750,
+      "height": 1000,
+      "thumb": "photos/thumbs/travel-montreal-1.webp"
     },
     {
       "src": "photos/travel-montreal-2.jpg",
@@ -196,7 +259,10 @@
       "tags": [
         "travel"
       ],
-      "date": "2021-11-05"
+      "date": "2021-11-05",
+      "width": 750,
+      "height": 1000,
+      "thumb": "photos/thumbs/travel-montreal-2.webp"
     },
     {
       "src": "photos/travel-montreal-3.jpg",
@@ -205,7 +271,10 @@
       "tags": [
         "travel"
       ],
-      "date": "2021-11-05"
+      "date": "2021-11-05",
+      "width": 750,
+      "height": 1000,
+      "thumb": "photos/thumbs/travel-montreal-3.webp"
     },
     {
       "src": "photos/travel-montreal-4.jpg",
@@ -214,7 +283,10 @@
       "tags": [
         "travel"
       ],
-      "date": "2022-10-14"
+      "date": "2022-10-14",
+      "width": 750,
+      "height": 1000,
+      "thumb": "photos/thumbs/travel-montreal-4.webp"
     },
     {
       "src": "photos/travel-montreal-5.jpg",
@@ -223,7 +295,10 @@
       "tags": [
         "travel"
       ],
-      "date": "2025-02-06"
+      "date": "2025-02-06",
+      "width": 818,
+      "height": 1000,
+      "thumb": "photos/thumbs/travel-montreal-5.webp"
     }
   ]
 }
