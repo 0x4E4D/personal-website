@@ -138,12 +138,15 @@ function shuffle(arr) {
   return a;
 }
 
+// Returns false if the data couldn't be fetched (render() then rebuilds
+// the page on the next visit instead of keeping the empty version).
 async function loadPhotos() {
-  let data;
+  let data, ok = true;
   try {
     data = await fetchJson("data/photos.json");
   } catch (e) {
     data = { photos: [] };
+    ok = false;
   }
 
   // Build the tag list from the original order so the filter bar stays stable
@@ -188,6 +191,7 @@ async function loadPhotos() {
   }
 
   buildMosaic(photos);
+  return ok;
 }
 
 // Every photo is built once; the tag filter just shows/hides them, so
@@ -269,16 +273,20 @@ function lazyEmbed(html) {
 // -------------------------
 // MUSIC
 // -------------------------
+// Returns false if the data couldn't be fetched (render() then rebuilds
+// the page on the next visit instead of keeping the empty version).
 async function loadMusic() {
-  let data;
+  let data, ok = true;
   try {
     data = await fetchJson("data/music.json");
   } catch (e) {
     data = { songs: [], sets: [] };
+    ok = false;
   }
 
   renderMusicSongs(shuffle(data.songs || []));   // fresh order every load
   renderMusicSets(shuffle(data.sets || []));     // fresh order every load
+  return ok;
 }
 
 function renderMusicSongs(items) {
@@ -371,15 +379,19 @@ function renderMusicSets(items) {
 // -------------------------
 // LIBRARY
 // -------------------------
+// Returns false if the data couldn't be fetched (render() then rebuilds
+// the page on the next visit instead of keeping the empty version).
 async function loadLibrary() {
-  let data;
+  let data, ok = true;
   try {
     data = await fetchJson("data/library.json");
   } catch (e) {
     data = { shelves: [] };
+    ok = false;
   }
 
   renderLibrary(data.shelves || []);
+  return ok;
 }
 
 function renderLibrary(shelves) {
@@ -427,8 +439,14 @@ let navToken = 0;         // bumps on every navigation; stale async work checks 
 function showView(name) {
   const content = document.getElementById("content");
   let view = views.get(name);
-  const isNew = !view;
-  if (isNew) {
+  let isNew = !view;
+  // Its data failed to load last time: start over so it refetches
+  if (view && view.dataset.stale) {
+    delete view.dataset.stale;
+    view.innerHTML = "";
+    isNew = true;
+  }
+  if (!view) {
     view = document.createElement("div");
     view.className = "page-view";
     view.dataset.view = name;
@@ -488,9 +506,10 @@ async function render(page) {
   view.appendChild(tpl.content.cloneNode(true));
 
   // Page-specific data loading
-  if (page === "photos")   await loadPhotos();
-  if (page === "music")    await loadMusic();
-  if (page === "library")  await loadLibrary();
+  let ok = true;
+  if (page === "photos")   ok = await loadPhotos();
+  if (page === "music")    ok = await loadMusic();
+  if (page === "library")  ok = await loadLibrary();
 
   // Blog list view
   if (page === "blog") {
@@ -499,6 +518,7 @@ async function render(page) {
       data = await fetchJson("posts/index.json");
     } catch (e) {
       data = { posts: [] };
+      ok = false;
     }
 
     const sortEl = document.getElementById("blog-sort");
@@ -511,6 +531,10 @@ async function render(page) {
       };
     }
   }
+
+  // Couldn't load this page's data (e.g. a dropped connection): show the empty
+  // state for now, but rebuild and refetch the next time the page is opened.
+  if (!ok) view.dataset.stale = "1";
 }
 
 function init() {
@@ -518,7 +542,10 @@ function init() {
   // paints first (keeps INP snappy)
   document.querySelectorAll(".nav-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
-      requestAnimationFrame(() => render(btn.dataset.page));
+      // Drop any sub-route (#blog/<slug>) so "Blog" goes back to the list
+      const page = btn.dataset.page;
+      if (location.hash !== `#${page}`) history.replaceState(null, "", `#${page}`);
+      requestAnimationFrame(() => render(page));
     });
   });
 

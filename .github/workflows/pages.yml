@@ -25,7 +25,8 @@ jobs:
         uses: actions/checkout@v4
       - name: Configure Pages
         uses: actions/configure-pages@v5
-      # Builds web-sized copies of any photo that doesn't have one yet (and
+      # Builds web-sized copies of any photo whose thumbnail is missing or out
+      # of date (and
       # records its size in photos.json), so a new photo is light on the live
       # site even if tools/build_thumbs.py wasn't run before pushing.
       - name: Set up Python
